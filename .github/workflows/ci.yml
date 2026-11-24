@@ -11,10 +11,10 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # SDK version comes from global.json so CI and local builds match.
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v5
         with:
           global-json-file: global.json
 
@@ -22,7 +22,7 @@ jobs:
         shell: pwsh
         run: ./scripts/build.ps1
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: CursorCloaker
           path: dist/*.zip
