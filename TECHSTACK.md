@@ -28,6 +28,7 @@ costs nothing.
 | .NET SDK | 10.0.x (`global.json`) | Builds the net48 project with `dotnet build`, so Visual Studio isn't required |
 | Microsoft.NETFramework.ReferenceAssemblies | 1.0.3 | net48 reference assemblies for the SDK build (build-time only) |
 | xUnit + Microsoft.NET.Test.Sdk | 2.9.2 / 17.11.1 | Unit tests for `Core/` |
+| ImageMagick | 7.x (dev only) | `scripts/make-icon.ps1` renders the master SVG to the multi-size .ico. The .ico is committed, so builds and CI don't need it |
 | Win32 APIs (P/Invoke) | — | `SetSystemCursor` / `SPI_SETCURSORS` (hide and restore), XInput + Raw Input (controllers), `WH_MOUSE_LL` (mouse), `GetForegroundWindow` + `MonitorFromWindow` (fullscreen), DWM attributes (Win11 menu frame) |
 
 ### Why .NET Framework 4.8 and not .NET 8/10
@@ -89,7 +90,8 @@ the only place it's written. CI (`.github/workflows/ci.yml`) runs the same scrip
 ```
 src/CursorCloaker/{Core,Win32,Ui}   app
 tests/CursorCloaker.Tests           unit tests
-scripts/                            build + preview
+scripts/                            build, menu preview, icon generation
+graphics/                           icon artwork (SVG master)
 docs/DESIGN.md                      behaviour spec
 ```
 

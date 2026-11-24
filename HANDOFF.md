@@ -13,8 +13,10 @@ This is everything a new developer or agent needs to continue the project cold. 
   atomic save. Loaded at startup, not yet used.
 - **Dark UI** (`Ui/Theme`, `Ui/ThemedMenu`, `Ui/TrayMenu`): custom menu renderer and the Win11 rounded
   DWM frame. All tokens live in `Theme.cs`.
+- **App icon** (`graphics/CursorCloaker-icon1.svg` → `scripts/make-icon.ps1` → `src/CursorCloaker/Resources/CursorCloaker.ico`, 10 frames, 16-256 px): set as the exe icon and embedded for the tray, which picks the frame for the DPI via `Ui/AppIcon`. Verified by loading both from the built exe: a 40 px Explorer frame and a 20 px tray frame at the dev machine's scaling.
+- **License**: MIT.
 - **Build** (`scripts/build.ps1`): tests, then Release, then `dist\CursorCloaker-v0.1.0.zip` (exe + config).
-- **CI** (`.github/workflows/ci.yml`): runs the build script on windows-latest.
+- **CI** (`.github/workflows/ci.yml`): runs the build script on windows-latest. Green, with no warnings.
 - **Tests**: 14 passing (`dotnet test`). They were seen to fail when a default was deliberately broken.
 
 **Verified facts:**
@@ -44,11 +46,11 @@ uses a real controller, mouse hook, fullscreen window or DPI other than the deve
 
 ## Never run / not yet verified
 
-- The CI workflow before its first push (check the Actions tab).
 - The Windows 10 code path (`DrawsOwnBorder`, where DWM rounding is unavailable).
 - Submenus and a pressed state in the themed menu. The preview shows hover, checked and disabled, but not an
   open submenu.
 - Behaviour at 100% or 200% display scaling.
+- The icon as it actually appears in the taskbar tray. It was checked only by rendering the frames. At 16-20 px the cursor's trail lines blur away; a simplified small-size variant of the artwork would fix that if it bothers anyone.
 
 ## Next steps, in order
 
@@ -61,4 +63,4 @@ uses a real controller, mouse hook, fullscreen window or DPI other than the deve
 4. Session lock/sign-out restore (`SystemEvents.SessionSwitch`).
 5. Full tray menu, Start with Windows (HKCU Run), and the exclusions window, all dark-themed
    through `Ui/`.
-6. App icon, then the v0.1.0 → v1.0.0 release via RUNNING.md.
+6. The v0.1.0 → v1.0.0 release via RUNNING.md.

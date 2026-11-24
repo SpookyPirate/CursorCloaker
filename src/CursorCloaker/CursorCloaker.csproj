@@ -10,7 +10,14 @@
     <RootNamespace>CursorCloaker</RootNamespace>
     <AssemblyName>CursorCloaker</AssemblyName>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- Explorer / taskbar icon. Built from graphics\CursorCloaker-icon1.svg by scripts\make-icon.ps1. -->
+    <ApplicationIcon>Resources\CursorCloaker.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Same .ico embedded for the tray, which needs a size chosen for the current DPI. -->
+    <EmbeddedResource Include="Resources\CursorCloaker.ico" LogicalName="CursorCloaker.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />

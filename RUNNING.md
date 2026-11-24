@@ -15,6 +15,8 @@ src/CursorCloaker/        the tray app (WinExe, .NET Framework 4.8, WinForms)
 tests/CursorCloaker.Tests xUnit tests for Core
 scripts/build.ps1         test + Release build + zip into dist/
 scripts/preview-menu.ps1  screenshot the real tray menu into preview/ for visual review
+scripts/make-icon.ps1     rebuild Resources\CursorCloaker.ico from graphics\CursorCloaker-icon1.svg
+graphics/                 icon artwork (the SVG is the master)
 docs/DESIGN.md            agreed behaviour and planned components
 Directory.Build.props     version (single source of truth) + shared build settings
 global.json               pins the .NET SDK (10.0.x)
@@ -55,6 +57,14 @@ dotnet build; powershell -ExecutionPolicy Bypass -File scripts\preview-menu.ps1
 
 This opens the real menu on the primary screen for about a second, with sample items in every state, and saves
 `preview\menu.png` (gitignored). Use `-Select <index>` to choose which row shows the hover state.
+
+## App icon
+
+The SVG in `graphics\` is the master. After editing it, regenerate the committed .ico (16-256 px frames). This needs ImageMagick 7 on PATH; normal builds don't.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\make-icon.ps1
+```
 
 ## Tests
 

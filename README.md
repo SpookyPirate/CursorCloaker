@@ -68,4 +68,8 @@ powershell -ExecutionPolicy Bypass -File scripts\build.ps1   # -> dist\CursorClo
 - [x] Dark theme for the tray menu
 - [ ] Tray menu settings, Start with Windows
 - [ ] Excluded programs window (browse / running programs / open windows)
-- [ ] App icon
+
+## License
+
+[MIT](LICENSE)
+- [x] App icon (exe + tray)

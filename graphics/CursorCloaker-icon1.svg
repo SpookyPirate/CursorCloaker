@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title">
+  <title id="title">CursorCloaker</title>
+  <defs>
+    <radialGradient id="tile" cx="42%" cy="18%" r="93%">
+      <stop stop-color="#242526"/>
+      <stop offset="1" stop-color="#101113"/>
+    </radialGradient>
+    <linearGradient id="rim" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#aaa9a7"/>
+      <stop offset=".24" stop-color="#58595b"/>
+      <stop offset=".8" stop-color="#303133"/>
+      <stop offset="1" stop-color="#646568"/>
+    </linearGradient>
+    <linearGradient id="silver" x2="0" y2="1">
+      <stop stop-color="#dedfe0"/>
+      <stop offset=".52" stop-color="#b5b7ba"/>
+      <stop offset="1" stop-color="#929497"/>
+    </linearGradient>
+    <linearGradient id="pointer" x2=".2" y2="1">
+      <stop stop-color="#fffdf7"/>
+      <stop offset="1" stop-color="#ebe9e1"/>
+    </linearGradient>
+    <linearGradient id="trail">
+      <stop stop-color="#7296b9"/>
+      <stop offset=".68" stop-color="#507393" stop-opacity=".72"/>
+      <stop offset="1" stop-color="#507393" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <g id="background">
+    <rect x="45" y="57" width="934" height="910" rx="222" fill="url(#tile)" stroke="url(#rim)" stroke-width="6"/>
+    <rect x="50" y="62" width="924" height="900" rx="218" fill="none" stroke="#fff" stroke-opacity=".06" stroke-width="2"/>
+  </g>
+  <g id="gamepad">
+    <path d="M387 572 H373 C317 572 295 609 267 644 C239 680 203 686 174 664 C135 634 135 584 151 532 C175 452 200 373 231 320 C258 275 289 244 332 244 H350 C396 244 397 294 434 294 H590 C627 294 628 244 674 244 H692 C735 244 766 275 793 320 C824 373 849 452 873 532 C889 584 889 634 850 664 C821 686 785 680 757 644 C729 609 707 572 651 572 H576"
+      fill="none" stroke="url(#silver)" stroke-width="32" stroke-linejoin="round"/>
+    <path d="M322 337 H352 Q368 337 368 353 V391 H407 Q425 391 425 409 V435 Q425 453 407 453 H368 V491 Q368 508 352 508 H322 Q306 508 306 491 V453 H267 Q249 453 249 435 V409 Q249 391 267 391 H306 V353 Q306 337 322 337 Z" fill="url(#silver)"/>
+    <g fill="url(#silver)">
+      <circle cx="694" cy="364" r="31"/>
+      <circle cx="632" cy="422" r="31"/>
+      <circle cx="754" cy="422" r="31"/>
+      <circle cx="694" cy="480" r="31"/>
+    </g>
+  </g>
+  <path id="cursor" d="M405 493 Q404 483 414 488 L635 651 Q645 660 633 662 H545 L608 781 Q614 790 604 790 H565 Q561 790 558 785 L499 690 L455 746 Q448 755 445 744 Z"
+    fill="url(#pointer)" stroke="#151618" stroke-width="14" stroke-linejoin="round" paint-order="stroke"/>
+  <g id="fade" fill="url(#trail)">
+    <path d="M596 715 H704 V733 H607 Z"/>
+    <path d="M617 756 H701 V774 H627 Z"/>
+    <path d="M640 796 H690 V810 H648 Z"/>
+  </g>
+</svg>

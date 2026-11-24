@@ -5,7 +5,6 @@
  * planned input, foreground and cloaking components that will hang off this context.
  */
 using System;
-using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -27,8 +26,7 @@ namespace CursorCloaker
 
             trayIcon = new NotifyIcon
             {
-                // TODO: Replace with a dedicated CursorCloaker icon resource.
-                Icon = SystemIcons.Application,
+                Icon = AppIcon.CreateTrayIcon(),
                 Text = "CursorCloaker " + VersionText(),
                 ContextMenuStrip = TrayMenu.Create(VersionText(), ExitThread),
                 Visible = true,
@@ -47,6 +45,7 @@ namespace CursorCloaker
         protected override void ExitThreadCore()
         {
             trayIcon.Visible = false;
+            trayIcon.Icon?.Dispose();
             trayIcon.Dispose();
             base.ExitThreadCore();
         }
