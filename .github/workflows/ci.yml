@@ -22,7 +22,7 @@ jobs:
         shell: pwsh
         run: ./scripts/build.ps1
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v7
         with:
           name: CursorCloaker
           path: dist/*.zip
