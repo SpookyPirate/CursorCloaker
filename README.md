@@ -4,8 +4,7 @@ CursorCloaker is a small Windows tray app that hides the mouse cursor while you'
 Press a button or move a stick in a fullscreen game, in Steam Big Picture or in an emulator, and the
 cursor disappears. Touch the mouse and it's back. Ordinary desktop use is never affected.
 
-> **Status: early scaffold (v0.1.0).** The tray app, settings file and build are in place.
-> Cloaking isn't wired in yet. See [Status](#status).
+> **Status: v0.1.0, feature-complete and awaiting real-controller testing.** See [Status](#status).
 
 ## Download
 
@@ -15,7 +14,7 @@ which already include .NET Framework 4.8.
 
 > Builds are unsigned, so Windows SmartScreen may warn the first time you run one. Choose **More info**, then **Run anyway**.
 
-## Features (planned for v1)
+## Features
 
 - **Controller-triggered.** Reacts to XInput pads (Xbox, 8BitDo) and to other HID gamepads (Switch
   Pro, DualShock/DualSense) through Raw Input. It doesn't need Steam Input.
@@ -61,13 +60,14 @@ powershell -ExecutionPolicy Bypass -File scripts\build.ps1   # -> dist\CursorClo
 - [x] Tray app scaffold: single instance, restores the cursors on every exit path
 - [x] Settings file: parsing, defaults, validation, tests
 - [x] Build script and CI
-- [ ] Blank-cursor hide, and parking
-- [ ] Controller input (XInput + Raw Input)
-- [ ] Mouse watcher and foreground/fullscreen detection
-- [ ] Cloak policy and its tests
+- [x] Blank-cursor hide, and parking
+- [x] Controller input (XInput + Raw Input)
+- [x] Mouse watcher and foreground/fullscreen detection
+- [x] Cloak policy and its tests
 - [x] Dark theme for the tray menu
-- [ ] Tray menu settings, Start with Windows
-- [ ] Excluded programs window (browse / running programs / open windows)
+- [x] Tray menu settings, Start with Windows
+- [x] Excluded programs window (browse / running programs / open windows)
+- [ ] Tested with real controllers (Xbox/8BitDo, Switch Pro, DualSense) and streaming
 
 ## License
 

@@ -52,6 +52,12 @@ namespace CursorCloaker.Core
         // Upper bound keeps a typo like "50000" from making the feature look broken.
         public const int MAX_HIDE_DELAY_MILLISECONDS = 10000;
 
+        /// <summary>An independent copy (the exclusion list is not shared).</summary>
+        public CloakSettings Clone()
+        {
+            return Parse(Serialize());
+        }
+
         // ============================================
         // Parsing
         // ============================================

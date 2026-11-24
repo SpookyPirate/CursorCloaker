@@ -16,6 +16,8 @@ namespace CursorCloaker.Core
         public ulong Buttons;
         /// <summary>Axes scaled to -32768..32767; triggers and unused axes may stay 0.</summary>
         public short LeftX, LeftY, RightX, RightY;
+        /// <summary>A third axis pair some HID pads report (Z/Rz: a right stick or analog triggers).</summary>
+        public short ExtraX, ExtraY;
         /// <summary>Triggers scaled to 0..255.</summary>
         public byte LeftTrigger, RightTrigger;
     }
@@ -39,6 +41,7 @@ namespace CursorCloaker.Core
             if ((current.Buttons & ~previous.Buttons) != 0) return true;
             if (StickActive(previous.LeftX, previous.LeftY, current.LeftX, current.LeftY)) return true;
             if (StickActive(previous.RightX, previous.RightY, current.RightX, current.RightY)) return true;
+            if (StickActive(previous.ExtraX, previous.ExtraY, current.ExtraX, current.ExtraY)) return true;
             return TriggerPulled(previous.LeftTrigger, current.LeftTrigger) || TriggerPulled(previous.RightTrigger, current.RightTrigger);
         }
 

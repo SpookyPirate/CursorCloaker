@@ -4,63 +4,86 @@ This is everything a new developer or agent needs to continue the project cold. 
 [RUNNING.md](RUNNING.md), [TECHSTACK.md](TECHSTACK.md) and the behaviour spec
 [docs/DESIGN.md](docs/DESIGN.md).
 
-## What exists and works (v0.1.0 scaffold)
+## What exists and works (v0.1.0)
 
-- **Tray app** (`src/CursorCloaker`): a .NET Framework 4.8 WinForms `WinExe`. Only one instance runs per
-  session (`Local\CursorCloaker.SingleInstance` mutex). It restores the system cursors at startup,
-  on exit, on an unhandled exception and on ProcessExit. The tray icon menu shows the version and Exit.
-- **Settings** (`Core/CloakSettings`, `Core/SettingsStore`): .ini format, defaults, validation,
-  atomic save. Loaded at startup, not yet used.
-- **Dark UI** (`Ui/Theme`, `Ui/ThemedMenu`, `Ui/TrayMenu`): custom menu renderer and the Win11 rounded
-  DWM frame. All tokens live in `Theme.cs`.
-- **App icon** (`graphics/CursorCloaker-icon1.svg` → `scripts/make-icon.ps1` → `src/CursorCloaker/Resources/CursorCloaker.ico`, 10 frames, 16-256 px): set as the exe icon and embedded for the tray, which picks the frame for the DPI via `Ui/AppIcon`. Verified by loading both from the built exe: a 40 px Explorer frame and a 20 px tray frame at the dev machine's scaling.
-- **License**: MIT.
-- **Build** (`scripts/build.ps1`): tests, then Release, then `dist\CursorCloaker-v0.1.0.zip` (exe + config).
-- **CI** (`.github/workflows/ci.yml`): runs the build script on windows-latest. Green, with no warnings.
-- **Tests**: 14 passing (`dotnet test`). They were seen to fail when a default was deliberately broken.
+Every feature in DESIGN.md is implemented. **It hasn't yet been tested with a real controller.**
+See "Never run" below.
 
-**Verified facts:**
-- The exe is about 14 KB.
-- ProductVersion reads `0.1.0`.
-- A second launch exits with code 0 while the first keeps running.
-- The packaged `dist` exe launches and stays running.
-- The menu renders dark with a blue checkmark. Screenshot via `scripts/preview-menu.ps1` at the
-  developer's DPI: items are 38 px tall, the menu is 291×244 px with sample items.
-- No ports, no network access, no secrets.
+- **Decision logic** (`Core/`):
+  - `CloakPolicy`: a state machine for cloak and uncloak.
+  - `InputFilters`: gamepad activity, mouse jitter, fullscreen geometry.
+  - `CloakSettings` and `SettingsStore`: the .ini file, saved atomically next to the exe and written with defaults on first run.
+- **Windows layer** (`Win32/`):
+  - `SystemCursors`: blank-cursor hide, restore and park.
+  - `XInputPoller`, plus `RawGamepadReader` for HID pads decoded via HidP_*.
+  - `MouseWatcher`: a low-level hook on its own thread. It's armed only while cloaked or pending.
+  - `ForegroundWatcher`, `StartupRegistration` (HKCU Run) and `ProgramCatalog`.
+- **Engine** (`CloakEngine`): a 16 ms UI-thread timer polls XInput and fires delayed cloaks. The foreground is re-read every
+  250 ms and before every controller decision.
+- **App** (`TrayContext`):
+  - The tray icon is dimmed while paused. Left or right click opens the menu.
+  - Settings flow: menu or window → `ApplySettings` → save, engine, Run key, refresh.
+  - On session lock, disconnect or sign-out, it uncloaks.
+- **UI** (`Ui/`): dark with a blue accent, with every token in `Theme.cs`.
+  - The themed menu, with submenus themed too.
+  - `ThemedForm` (dark title bar), `ThemedButton` (primary/secondary, every state), `ProgramList`
+    (icon rows with an empty state), `ListCard`, `SearchBox` (native cue banner).
+  - `ExclusionsWindow` and `ProgramPickerWindow` (running programs or open windows, loaded off the UI thread, filtered as you type).
+- **Icon, license, build, CI**: as before. CI is green.
+- **Tests**: 56 passing (`dotnet test`). The mouse-uncloak rule was deliberately broken to confirm the suite
+  catches it.
+
+**Verified facts (2026-11-24, Windows 11, developer machine):**
+- **Cursor hide/restore:** the arrow, I-beam and hand cursors were drawn and their opaque pixels counted:
+  144/26/282 before, 0 after `Hide`, and 144/26/282 after `Restore`.
+- **Hook probe:** `SetCursorPos` never reaches a `WH_MOUSE_LL` hook. `SendInput` does, flagged injected
+  (see DESIGN.md "Mouse input").
+- **Engine in a harness:**
+  - The mouse hook installs and Raw Input registers.
+  - The engine starts uncloaked.
+  - The foreground read works (Brave, windowed: not fullscreen) and the engine disposes cleanly.
+- **The exe:**
+  - It runs. `StartWithWindows=false` leaves no Run entry.
+  - `true` writes `"<exe path>"`, and switching back to `false` removes it. The registry was left as found.
+- **Screenshots, looked at:**
+  - The menu, and the menu with a submenu open.
+  - The exclusions window, empty and filled, with the Add menu open.
+  - Both pickers, with real data: 92 running programs and 13 windows.
 
 ## Gotchas
 
-- **SetSystemCursor survives the process.** Once hiding is implemented, killing the app (Task Manager,
-  `Stop-Process`) leaves the blank cursor in place until the next launch, sign-out or Mouse settings
-  change. The startup restore exists for this reason. Don't remove it.
-- `Stop-Process` skips managed exit handlers, so only the startup restore covers it.
-- The solution file is `CursorCloaker.slnx` (new XML format). It needs .NET SDK 9.0.200 or later; `global.json` pins 10.0.x.
-- `TreatWarningsAsErrors` is on for every project.
-- `preview-menu.ps1` opens a real menu on the primary screen. Don't run it while someone is
-  gaming or streaming.
+- **SetSystemCursor survives the process.** Killing the app while it's cloaked (Task Manager, `Stop-Process`)
+  leaves the cursor invisible until the next launch, sign-out or Mouse settings change. The startup
+  restore exists for this reason. Don't remove it.
+- **Dev runs register themselves to start with Windows** unless the dev folder's ini sets
+  `StartWithWindows=false` (see RUNNING.md).
+- The mouse hook **must** stay on its own thread. Windows silently drops a low-level hook that's slow to
+  answer.
+- **Preview harness:** `PrintWindow(PW_RENDERFULLCONTENT)` leaves owner-drawn regions stale on screen, so the
+  harness captures from the screen instead. A "blank row" seen in an early capture was this artifact, not an app bug.
+- PowerShell harness scripts must pass `.psobject.BaseObject` (or typed arrays) to reflection `Invoke`.
+- The solution is `CursorCloaker.slnx`, which needs SDK 9.0.200 or later. `TreatWarningsAsErrors` is on.
 
 ## What the tests do not cover
 
-Everything in `Win32/` and `Ui/`, and the whole cloaking feature, which doesn't exist yet. No test
-uses a real controller, mouse hook, fullscreen window or DPI other than the developer's.
+The unit tests cover `Core/` only. Nothing in `Win32/`, `Ui/` or `CloakEngine` is unit-tested. They were
+checked by the probes and screenshots above.
 
 ## Never run / not yet verified
 
-- The Windows 10 code path (`DrawsOwnBorder`, where DWM rounding is unavailable).
-- Submenus and a pressed state in the themed menu. The preview shows hover, checked and disabled, but not an
-  open submenu.
-- Behaviour at 100% or 200% display scaling.
-- The icon as it actually appears in the taskbar tray. It was checked only by rendering the frames. At 16-20 px the cursor's trail lines blur away; a simplified small-size variant of the artwork would fix that if it bothers anyone.
+- **Real controller input.** XInput (Xbox/8BitDo), Raw Input (Switch Pro, DualShock/DualSense), and the stick
+  dead-zone and drift thresholds on real hardware. *This is the first thing to test.*
+- **End to end in Steam Big Picture, RetroBat, an emulator and a fullscreen game**, including:
+  - Moonlight and Steam Link streaming (does the couch mouse uncloak?);
+  - parking in a corner while the mouse moves *into* that corner (the hook position may be clamped there, so the
+    movement may not count; clicks still do).
+- A Switch Pro Controller that Steam has switched into its full (0x30) report mode. This is expected *not* to be
+  detected (see RawGamepadReader's header).
+- Multiple monitors, Windows 10, and 100% or 200% scaling.
+- The tray icon as it appears in the real notification area. At 16-20 px the cursor's trail lines blur.
 
-## Next steps, in order
+## Next steps
 
-1. `Win32/SystemCursors`: blank-cursor hide (one `CreateCursor` blank cursor, copied into each
-   OCR_* system cursor id), plus parking.
-2. `Core/CloakPolicy` with tests: every rule in DESIGN.md, including "the mouse wins until the next
-   controller input".
-3. `Win32/ControllerInput` (XInput + Raw Input), `MouseWatcher` (LL hook, ignore injected),
-   `ForegroundWatch` (fullscreen test). Then wire them into `TrayContext`.
-4. Session lock/sign-out restore (`SystemEvents.SessionSwitch`).
-5. Full tray menu, Start with Windows (HKCU Run), and the exclusions window, all dark-themed
-   through `Ui/`.
-6. The v0.1.0 → v1.0.0 release via RUNNING.md.
+1. Real-controller and streaming test session with the user (list above). Tune `GamepadActivity` thresholds
+   and `MouseMovementFilter.MOVE_THRESHOLD_PIXELS` from what that shows.
+2. Fix whatever it finds, then release v0.1.0 via RUNNING.md (tag, then `gh release create` with the zip).

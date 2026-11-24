@@ -16,9 +16,17 @@ namespace CursorCloaker.Ui
 {
     internal static class ThemedMenu
     {
-        /// <summary>Style a menu and, as they open, every submenu beneath it.</summary>
+        // Menus already themed. A submenu reports its parent's renderer, so the renderer can't
+        // tell whether a submenu has had its own font, padding and window frame applied.
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<ToolStripDropDownMenu, object> themed =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<ToolStripDropDownMenu, object>();
+
+        /// <summary>Style a menu and every submenu beneath it (items added later are styled on open).</summary>
         public static void Apply(ToolStripDropDownMenu menu)
         {
+            if (themed.TryGetValue(menu, out _)) return;
+            themed.Add(menu, null);
+
             menu.Renderer = new DarkMenuRenderer();
             menu.Font = Theme.CreateFont();
             menu.BackColor = Theme.Surface;
@@ -44,10 +52,10 @@ namespace CursorCloaker.Ui
                 if (!(item is ToolStripSeparator)) item.Padding = new Padding(0, 6, 0, 6);
                 item.ForeColor = Theme.TextPrimary;
 
-                if (item is ToolStripMenuItem menuItem && menuItem.HasDropDownItems
-                    && menuItem.DropDown is ToolStripDropDownMenu submenu && !(submenu.Renderer is DarkMenuRenderer))
+                if (item is ToolStripMenuItem menuItem && menuItem.HasDropDownItems && menuItem.DropDown is ToolStripDropDownMenu submenu)
                 {
                     Apply(submenu);
+                    StyleItems(submenu);
                 }
             }
         }

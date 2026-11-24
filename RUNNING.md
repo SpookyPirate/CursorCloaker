@@ -14,7 +14,8 @@ src/CursorCloaker/        the tray app (WinExe, .NET Framework 4.8, WinForms)
   Ui/                     dark theme tokens (Theme.cs) and themed menus/windows
 tests/CursorCloaker.Tests xUnit tests for Core
 scripts/build.ps1         test + Release build + zip into dist/
-scripts/preview-menu.ps1  screenshot the real tray menu into preview/ for visual review
+scripts/preview-menu.ps1  screenshot the real tray menu (and a submenu) into preview/
+scripts/preview-windows.ps1 screenshot the exclusions window and pickers into preview/
 scripts/make-icon.ps1     rebuild Resources\CursorCloaker.ico from graphics\CursorCloaker-icon1.svg
 graphics/                 icon artwork (the SVG is the master)
 docs/DESIGN.md            agreed behaviour and planned components
@@ -37,7 +38,11 @@ dotnet build
 .\src\CursorCloaker\bin\Debug\net48\CursorCloaker.exe
 ```
 
-The app sits in the tray. Right-click its icon and choose **Exit**. Only one copy runs per session, so
+The app sits in the tray. Click its icon and choose **Exit**.
+
+> **Before the first dev run:** put a `CursorCloaker.ini` containing `StartWithWindows=false` in
+> `src\CursorCloaker\bin\Debug\net48\`. Otherwise the default (on) registers the *dev* exe to start
+> with Windows. Only one copy runs per session, so
 a second launch exits immediately. Stop the running copy before testing a new build. If it's stuck:
 
 ```powershell
@@ -53,10 +58,11 @@ Every UI change gets rendered and looked at (see the UI standard in [docs/DESIGN
 
 ```powershell
 dotnet build; powershell -ExecutionPolicy Bypass -File scripts\preview-menu.ps1
+dotnet build; powershell -ExecutionPolicy Bypass -File scripts\preview-windows.ps1
 ```
 
-This opens the real menu on the primary screen for about a second, with sample items in every state, and saves
-`preview\menu.png` (gitignored). Use `-Select <index>` to choose which row shows the hover state.
+These open the real menu and windows on the primary screen for a few seconds, using data from this PC, and
+save PNGs to `preview\` (gitignored). Don't run them while someone is gaming or streaming.
 
 ## App icon
 

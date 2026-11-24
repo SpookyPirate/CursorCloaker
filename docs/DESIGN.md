@@ -54,7 +54,7 @@ reloads the cursor scheme. So `SystemCursors.Restore()` (SPI_SETCURSORS) runs:
 
 - at every startup, in case a previous run was killed,
 - on normal exit, on an unhandled exception and on ProcessExit,
-- when the session is locked or the user signs out (planned, `SessionSwitch`).
+- when the session is locked, disconnected or signed out (`SessionSwitch`).
 
 If the user ever sees no cursor, signing out and back in, or reopening Mouse settings, also
 restores it.
@@ -67,18 +67,23 @@ TrayContext        tray icon + menu, owns the components below
 Core/              pure logic, unit tested
   CloakSettings    .ini format, defaults, validation            (done)
   SettingsStore    load/save next to the exe                    (done)
-  CloakPolicy      decides cloak/uncloak from input, foreground and settings   (planned)
+  CloakPolicy      decides cloak/uncloak from input, foreground and settings   (done)
+  InputFilters     gamepad activity, mouse jitter, fullscreen geometry          (done)
 Win32/             thin P/Invoke wrappers, no decisions
-  SystemCursors    restore (done), blank-cursor swap (planned)
-  ControllerInput  XInput polling + Raw Input HID gamepads (planned)
-  MouseWatcher     low-level mouse hook that ignores injected events (planned)
-  ForegroundWatch  foreground window, its process, fullscreen test (planned)
-  Startup          "Start with Windows" via HKCU Run key (planned)
+  SystemCursors    blank-cursor hide, restore, park                (done)
+  XInputPoller     XInput slots 0-3, polled at ~60 Hz              (done)
+  RawGamepadReader Raw Input HID gamepads, decoded via HidP_*      (done)
+  MouseWatcher     low-level mouse hook on its own thread          (done)
+  ForegroundWatcher foreground process + fullscreen test           (done)
+  StartupRegistration "Start with Windows" via HKCU Run key     (done)
+  ProgramCatalog   programs from an exe, running processes, open windows (done)
+CloakEngine        wires watchers -> policy -> SystemCursors       (done)
 Ui/                dark theme and windows
   Theme            colour, type and spacing tokens              (done)
   ThemedMenu       dark renderer + Win11 rounded frame for menus (done)
-  TrayMenu         builds the tray menu                         (done: version + Exit)
-  ExclusionsWindow add/remove excluded programs                 (planned)
+  TrayMenu         the tray menu                                (done)
+  ThemedForm/Button, ProgramList, ListCard, SearchBox   themed window parts (done)
+  ExclusionsWindow + ProgramPickerWindow                add/remove excluded programs (done)
 ```
 
 `CloakPolicy` takes plain values (whether a controller was active, whether there was mouse
@@ -100,10 +105,17 @@ controller.
 
 ### Mouse input
 
-A low-level mouse hook (`WH_MOUSE_LL`) sees real movement. Events flagged `LLMHF_INJECTED` are
-ignored, so the app's own parking and any software-generated movement don't uncloak the cursor.
-Open question: Steam Input's mouse emulation is injected, so it won't uncloak. Decide whether
-it should.
+A low-level mouse hook (`WH_MOUSE_LL`) sees mouse movement, clicks and wheel. **Injected events
+count as real.** Measured on Windows 11 (2026-11-24):
+- `SetCursorPos` never reaches the hook. So the app's own parking, and games recentering the
+  cursor, can't uncloak it.
+- `SendInput` does reach the hook, with `LLMHF_INJECTED`. That's how Moonlight/Sunshine and Steam Link
+  deliver the couch mouse. Ignoring injected input would leave a streaming user unable to bring the
+  cursor back.
+
+Movement goes through a jitter filter (6 px since cloaking). Clicks and wheel count at once. The
+hook runs on its own thread with its own message loop. Windows silently removes a low-level hook
+whose thread is slow to respond (`LowLevelHooksTimeout`), so UI work must never be able to block it.
 
 ### Fullscreen test
 
@@ -112,16 +124,18 @@ The foreground window's rectangle covers its monitor's full bounds (`MonitorFrom
 desktop (`Progman` / `WorkerW`) and the taskbar never count. The process is DPI aware
 (app.manifest), so the rectangles are physical pixels.
 
-## Tray menu (planned)
+## Tray menu
+
+Left or right click opens it. While paused, the tray icon is dimmed and its tooltip says so.
 
 - **Enabled**: on or off.
-- **Mode**: Hide, Park, or Hide + Park.
-- **Scope**: Fullscreen only, or All programs.
+- **Cloak style**: Hide, Move to corner, or Hide and move to corner (`Mode`).
+- **Cloak over**: Fullscreen programs or All programs (`Scope`).
 - **Excluded programs…**: opens the exclusions window.
 - **Start with Windows**: on or off.
 - **Exit**: restores the cursors and closes.
 
-## Exclusions window (planned)
+## Exclusions window
 
 A small window for managing the programs CursorCloaker never cloaks over. Users shouldn't have to
 edit the .ini file.
@@ -146,9 +160,9 @@ edit the .ini file.
 All UI is **dark with a blue accent** and follows the global `ui-design` skill. Every colour, font
 and spacing value comes from `src/CursorCloaker/Ui/Theme.cs`. No other file defines a colour.
 WinForms controls are themed through shared helpers (`ThemedMenu` for menus; a themed window
-base and its controls when the exclusions window is built). Default light system styling must
-never show. Each UI change is checked by rendering it (`scripts/preview-menu.ps1` for the menu)
-and looking at the screenshot.
+base `ThemedForm`, `ThemedButton`, `ProgramList`, `ListCard` and `SearchBox` for windows). Default light
+system styling must never show. Each UI change is checked by rendering it and looking at the
+screenshot: `scripts/preview-menu.ps1` for the menu, `scripts/preview-windows.ps1` for the windows.
 
 ## Streaming
 
