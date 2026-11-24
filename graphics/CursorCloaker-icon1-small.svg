@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title">
+  <!--
+    Small-size variant of CursorCloaker-icon1.svg, used for the 16-24 px icon frames (tray at
+    100-150% scaling). Same tile, gamepad and cursor, simplified so they survive a 16 px grid:
+    the tile fills the canvas, strokes are heavier, the d-pad and face buttons are bolder and
+    fewer edges compete, and the motion trail (sub-pixel at this size) is dropped.
+  -->
+  <title id="title">CursorCloaker</title>
+  <defs>
+    <linearGradient id="silver" x2="0" y2="1">
+      <stop stop-color="#e4e5e6"/>
+      <stop offset="1" stop-color="#a9abae"/>
+    </linearGradient>
+  </defs>
+  <rect x="16" y="16" width="992" height="992" rx="200" fill="#16171a" stroke="#5c5d60" stroke-width="24"/>
+  <path d="M387 600 H373 C317 600 287 640 259 676 C231 712 185 718 152 692 C110 660 108 604 126 546 C152 462 180 376 214 318 C243 268 280 232 328 232 H350 C396 232 397 282 434 282 H590 C627 282 628 232 674 232 H696 C744 232 781 268 810 318 C844 376 872 462 898 546 C916 604 914 660 872 692 C839 718 793 712 765 676 C737 640 707 600 651 600 H576"
+    fill="none" stroke="url(#silver)" stroke-width="64" stroke-linejoin="round"/>
+  <path d="M300 340 H364 V404 H428 V468 H364 V532 H300 V468 H236 V404 H300 Z" fill="url(#silver)"/>
+  <g fill="url(#silver)">
+    <circle cx="700" cy="378" r="44"/>
+    <circle cx="700" cy="492" r="44"/>
+  </g>
+  <path d="M392 470 L392 900 L486 800 L556 940 L640 900 L572 768 L700 760 Z"
+    fill="#fffdf7" stroke="#0e0f11" stroke-width="40" stroke-linejoin="round" paint-order="stroke"/>
+</svg>

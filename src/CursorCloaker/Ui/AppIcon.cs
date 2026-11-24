@@ -4,8 +4,9 @@
  * The .ico holds 16-256 px frames. Asking for an exact size picks the matching frame instead of
  * letting Windows scale the 32 px one, which blurs in the tray at 125%+ scaling.
  *
- * The paused variant is the same frame at reduced opacity, so "off" reads at a glance without a
- * second piece of artwork.
+ * The paused variant keeps the tile solid and dims its contents: the bright controller and cursor
+ * drop to a muted grey. Lowering opacity instead made the dark tile vanish into a dark taskbar,
+ * which reads as "missing", not "paused".
  */
 using System;
 using System.Drawing;
@@ -18,8 +19,8 @@ namespace CursorCloaker.Ui
     {
         private const string RESOURCE_NAME = "CursorCloaker.ico";
         private const int SM_CXSMICON = 49;
-        // Paused icon opacity: clearly dimmer, still recognisable on light and dark taskbars.
-        private const float PAUSED_OPACITY = 0.4f;
+        // Paused icon brightness (RGB multiplier, alpha unchanged): the white artwork becomes a mid grey.
+        private const float PAUSED_BRIGHTNESS = 0.6f;
 
         [DllImport("user32.dll")]
         private static extern int GetSystemMetrics(int index);
@@ -52,7 +53,16 @@ namespace CursorCloaker.Ui
                 using (var graphics = Graphics.FromImage(dimmed))
                 using (var attributes = new ImageAttributes())
                 {
-                    attributes.SetColorMatrix(new ColorMatrix { Matrix33 = PAUSED_OPACITY });
+                    // Greyscale (luma weights) scaled down; alpha untouched so the tile stays solid.
+                    float r = 0.299f * PAUSED_BRIGHTNESS, g = 0.587f * PAUSED_BRIGHTNESS, b = 0.114f * PAUSED_BRIGHTNESS;
+                    attributes.SetColorMatrix(new ColorMatrix(new[]
+                    {
+                        new[] { r, r, r, 0f, 0f },
+                        new[] { g, g, g, 0f, 0f },
+                        new[] { b, b, b, 0f, 0f },
+                        new[] { 0f, 0f, 0f, 1f, 0f },
+                        new[] { 0f, 0f, 0f, 0f, 1f },
+                    }));
                     graphics.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height),
                         0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
                 }

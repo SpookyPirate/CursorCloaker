@@ -29,7 +29,11 @@ See "Never run" below.
   - `ThemedForm` (dark title bar), `ThemedButton` (primary/secondary, every state), `ProgramList`
     (icon rows with an empty state), `ListCard`, `SearchBox` (native cue banner).
   - `ExclusionsWindow` and `ProgramPickerWindow` (running programs or open windows, loaded off the UI thread, filtered as you type).
-- **Icon, license, build, CI**: as before. CI is green.
+- **Icon**: `graphics/CursorCloaker-icon1.svg` covers 32-256 px. `graphics/CursorCloaker-icon1-small.svg` (simplified: heavier
+  strokes, no motion trail) covers 16-24 px, through `scripts/make-icon.ps1`. The paused tray icon is the same frame with its
+  contents greyed (`PAUSED_BRIGHTNESS` 0.6), with the tile kept solid. Fading the whole icon made it vanish on a dark taskbar.
+- **Build**: `scripts/build.ps1` produces `CursorCloaker-v<version>.zip` → `CursorCloaker/` → files, and asserts that layout.
+  The layout check was seen to flag a flat zip. CI is green. License: MIT.
 - **Tests**: 56 passing (`dotnet test`). The mouse-uncloak rule was deliberately broken to confirm the suite
   catches it.
 
@@ -80,7 +84,8 @@ checked by the probes and screenshots above.
 - A Switch Pro Controller that Steam has switched into its full (0x30) report mode. This is expected *not* to be
   detected (see RawGamepadReader's header).
 - Multiple monitors, Windows 10, and 100% or 200% scaling.
-- The tray icon as it appears in the real notification area. At 16-20 px the cursor's trail lines blur.
+- The tray icon as it appears in the real notification area. Windows 11 put it in the hidden overflow, so it was judged by
+  rendering it on the taskbar's own colours (#202020 dark, #F3F3F3 light) at the real 16 px tray size, enabled and paused.
 
 ## Next steps
 

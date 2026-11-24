@@ -66,7 +66,9 @@ save PNGs to `preview\` (gitignored). Don't run them while someone is gaming or 
 
 ## App icon
 
-The SVG in `graphics\` is the master. After editing it, regenerate the committed .ico (16-256 px frames). This needs ImageMagick 7 on PATH; normal builds don't.
+`graphics\CursorCloaker-icon1.svg` is the artwork for 32 px and up. `graphics\CursorCloaker-icon1-small.svg` is a simplified
+version for the 16-24 px tray sizes, where the full artwork's fine lines blur. After editing either one, regenerate the
+committed .ico (16-256 px frames). This needs ImageMagick 7 on PATH; normal builds don't.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\make-icon.ps1
@@ -87,7 +89,9 @@ version shown in the tray, and the zip name all come from it. Then:
 powershell -ExecutionPolicy Bypass -File scripts\build.ps1
 ```
 
-That runs the tests and produces `dist\CursorCloaker\` and `dist\CursorCloaker-v<version>.zip`.
+That runs the tests and produces `dist\CursorCloaker\` and `dist\CursorCloaker-v<version>.zip`. The zip holds one
+`CursorCloaker/` folder (no version in its name), so a release extracts straight over the previous one. The script
+fails if any entry lands outside that folder, or if a `CursorCloaker.ini` would ship and overwrite user settings.
 Smoke-test the packaged exe before publishing:
 
 ```powershell

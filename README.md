@@ -9,8 +9,14 @@ cursor disappears. Touch the mouse and it's back. Ordinary desktop use is never 
 ## Download
 
 Builds will be published on the [Releases page](https://github.com/SpookyPirate/CursorCloaker/releases/latest)
-as a portable zip. Unzip it and run `CursorCloaker.exe`; there's nothing to install. It needs Windows 10 or 11,
-which already include .NET Framework 4.8.
+as a portable zip. It contains a single `CursorCloaker` folder. Extract it somewhere permanent and run
+`CursorCloaker\CursorCloaker.exe`; there's nothing to install. To upgrade, extract the new zip to the same place: the new
+folder lands on the old one, and your settings are kept. It needs Windows 10 or 11, which already include
+.NET Framework 4.8.
+
+> Windows 11 hides new tray icons in the overflow (the **^** next to the clock). To keep CursorCloaker
+> visible, drag its icon onto the taskbar, or turn it on under **Settings > Personalization > Taskbar >
+> Other system tray icons**.
 
 > Builds are unsigned, so Windows SmartScreen may warn the first time you run one. Choose **More info**, then **Run anyway**.
 

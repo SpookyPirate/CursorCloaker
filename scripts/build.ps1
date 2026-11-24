@@ -33,7 +33,26 @@ Invoke-Checked 'Build' { dotnet build $project --nologo -c Release -o $appDir }
 # Ship only what the app needs at runtime; debug symbols stay out of the zip.
 Get-ChildItem $appDir -File | Where-Object { $_.Name -notin 'CursorCloaker.exe', 'CursorCloaker.exe.config' } | Remove-Item -Force
 
+# The zip holds one CursorCloaker\ folder (no version in its name), so a new release extracts
+# straight over the previous one. CursorCloaker.ini is created by the app on first run and is
+# never shipped, so extracting an upgrade keeps the user's settings.
 $zip = Join-Path $dist "CursorCloaker-v$version.zip"
 if (Test-Path $zip) { Remove-Item $zip -Force }
-Compress-Archive -Path (Join-Path $appDir '*') -DestinationPath $zip
+Compress-Archive -Path $appDir -DestinationPath $zip
+
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$archive = [IO.Compression.ZipFile]::OpenRead($zip)
+try {
+    $entries = @($archive.Entries | ForEach-Object { $_.FullName -replace '\\', '/' })
+    $stray = @($entries | Where-Object { -not $_.StartsWith('CursorCloaker/') })
+    $required = 'CursorCloaker/CursorCloaker.exe', 'CursorCloaker/CursorCloaker.exe.config'
+    $missing = @($required | Where-Object { $_ -notin $entries })
+    if ($stray.Count -gt 0) { throw "Zip entries outside CursorCloaker/: $($stray -join ', ')" }
+    if ($missing.Count -gt 0) { throw "Zip is missing: $($missing -join ', ')" }
+    if ($entries -contains 'CursorCloaker/CursorCloaker.ini') { throw 'Zip must not ship CursorCloaker.ini (it would overwrite user settings on upgrade)' }
+}
+finally {
+    $archive.Dispose()
+}
 Write-Host "Packaged $zip"
+$entries | ForEach-Object { Write-Host "  $_" }
