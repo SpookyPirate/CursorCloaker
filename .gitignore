@@ -1,0 +1,27 @@
+# Build output / packaged artifacts — never commit these
+bin/
+obj/
+dist/
+TestResults/
+*.user
+.vs/
+
+# Runtime settings written next to a locally run exe
+CursorCloaker.ini
+CursorCloaker.ini.tmp
+
+# Secrets / local config
+.env
+.env.*
+!.env.example
+
+# Private workspace (internal docs stay out of the public repo)
+internal-documentation/
+internal/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+
+# Screenshots from scripts/preview-menu.ps1
+preview/

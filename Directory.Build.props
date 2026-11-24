@@ -1,0 +1,17 @@
+<!--
+  Shared build settings for every project in the repo.
+  <Version> here is the single source of truth: the assembly version, the version the tray menu
+  shows, and the release zip name (scripts/build.ps1) all derive from it.
+-->
+<Project>
+  <PropertyGroup>
+    <Version>0.1.0</Version>
+    <Product>CursorCloaker</Product>
+    <Authors>SpookyPirate</Authors>
+    <Copyright>SpookyPirate</Copyright>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CursorCloaker/CursorCloaker.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CursorCloaker.Tests/CursorCloaker.Tests.csproj" />
+  </Folder>
+</Solution>

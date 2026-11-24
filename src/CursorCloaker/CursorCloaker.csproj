@@ -1,0 +1,23 @@
+<!--
+  CursorCloaker tray app. Targets .NET Framework 4.8, which ships with Windows 10/11, so the
+  output is a small exe with no runtime to install. The reference-assemblies package lets the
+  .NET SDK (dotnet build) compile for net48 without Visual Studio's targeting packs.
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>CursorCloaker</RootNamespace>
+    <AssemblyName>CursorCloaker</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Lets the test project exercise internal Core types without making them public. -->
+    <InternalsVisibleTo Include="CursorCloaker.Tests" />
+  </ItemGroup>
+</Project>
