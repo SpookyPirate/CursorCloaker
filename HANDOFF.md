@@ -54,6 +54,12 @@ reported it "works well". They didn't say which models, or whether they tested w
   - The exclusions window, empty and filled, with the Add menu open.
   - Both pickers, with real data: 92 running programs and 13 windows.
 
+## Releases
+
+- **v0.1.0** (2026-11-24): https://github.com/SpookyPirate/CursorCloaker/releases/tag/v0.1.0. The `CursorCloaker-v0.1.0.zip` asset is
+  184,845 bytes, verified equal to the local build. The tag is on commit 165e40a. The zip is mostly the icon (embedded twice: once as
+  the exe icon, once as the tray resource).
+
 ## Gotchas
 
 - **SetSystemCursor survives the process.** Killing the app while it's cloaked (Task Manager, `Stop-Process`)
