@@ -54,7 +54,7 @@ reported it "works well". They didn't say which models. On 2026-11-25 they repor
   - The exclusions window, empty and filled, with the Add menu open.
   - Both pickers, with real data: 92 running programs and 13 windows.
 
-## Since v0.1.0 (unreleased)
+## Since v0.1.0 (unreleased; version already bumped to 0.2.0)
 
 - **Park position setting** (`ParkPosition`, tray **Move to**): any corner or the middle of any edge, default bottom-right.
   Tested: every position has a unit test (a deliberately swapped position was caught), and the real cursor was parked
