@@ -7,7 +7,7 @@ This is everything a new developer or agent needs to continue the project cold. 
 ## What exists and works (v0.1.0)
 
 Every feature in DESIGN.md is implemented. On 2026-11-24 the user tested it with their real controllers and
-reported it "works well". They didn't say which models, or whether they tested while streaming.
+reported it "works well". They didn't say which models. On 2026-11-25 they reported that streaming works perfectly.
 
 - **Decision logic** (`Core/`):
   - `CloakPolicy`: a state machine for cloak and uncloak.
@@ -83,10 +83,7 @@ checked by the probes and screenshots above.
 
 - **Per-model controller coverage.** The user's real-controller test passed (models not reported). Raw Input pads
   (Switch Pro, DualShock/DualSense) haven't been individually confirmed, and neither have the dead-zone and drift thresholds on a drifting stick.
-- **End to end in Steam Big Picture, RetroBat, an emulator and a fullscreen game**, including:
-  - Moonlight and Steam Link streaming (does the couch mouse uncloak?);
-  - parking in a corner while the mouse moves *into* that corner (the hook position may be clamped there, so the
-    movement may not count; clicks still do).
+- **Parking corner edge case:** while the cursor is parked in a corner, moving the mouse *into* that corner may not register (the hook position may be clamped there); clicks still do. Not yet reported either way.
 - A Switch Pro Controller that Steam has switched into its full (0x30) report mode. This is expected *not* to be
   detected (see RawGamepadReader's header).
 - Multiple monitors, Windows 10, and 100% or 200% scaling.
