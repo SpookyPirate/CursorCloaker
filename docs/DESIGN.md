@@ -133,8 +133,9 @@ desktop (`Progman` / `WorkerW`) and the taskbar never count. The process is DPI 
 Left or right click opens it. While paused, the tray icon is dimmed and its tooltip says so.
 
 - **Enabled**: on or off.
-- **Cloak style**: Hide, Move away, or Hide and move away (`Mode`).
-- **Move to**: four corners, then the four edge midpoints (`ParkPosition`). Disabled while the style is Hide.
+- **Cloak style**: Hide, Move away, or Hide and move away (`Mode`). Below them, under a "Move to" heading, come
+  the four corners and then the four edge midpoints (`ParkPosition`). They're greyed out while the style is Hide. They sit in
+  the same submenu, not a submenu of their own, to avoid a third menu level.
 - **Cloak over**: Fullscreen programs or All programs (`Scope`).
 - **Excluded programs…**: opens the exclusions window.
 - **Start with Windows**: on or off.

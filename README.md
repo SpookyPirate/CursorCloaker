@@ -15,7 +15,7 @@ game and the cursor disappears. Touch the mouse and it comes straight back. Ordi
 never affected.
 
 <p align="center">
-  <img src="docs/images/tray-menu.png" width="440" alt="CursorCloaker tray menu with the Move to submenu open, listing four corners and four edges">
+  <img src="docs/images/tray-menu.png" width="440" alt="CursorCloaker tray menu with the Cloak style submenu open: three styles, then four corners and four edges to move the cursor to">
 </p>
 
 ## Download
@@ -57,8 +57,8 @@ Click the tray icon:
 
 - **Enabled**: pause or resume. The icon greys out while paused.
 - **Cloak style**: hide the cursor, move it away, or both (the default). Moving it helps with games that
-  draw their own cursor.
-- **Move to**: where a moved cursor goes. Any corner (bottom-right by default) or the middle of any edge.
+  draw their own cursor. The same submenu sets where it moves to: any corner (bottom-right by default) or the
+  middle of any edge.
 - **Cloak over**: fullscreen programs only (the default), or all programs.
 - **Excluded programs…**: programs CursorCloaker never touches.
 - **Start with Windows**

@@ -3,7 +3,7 @@
 
   Shows the real UI over a plain dark backdrop window, so nothing from the desktop (other apps,
   window titles) ends up in a published image:
-    docs/images/tray-menu.png          tray menu with the "Move to" submenu open
+    docs/images/tray-menu.png          tray menu with the "Cloak style" submenu open
     docs/images/excluded-programs.png  exclusions window with a few running programs excluded
     docs/images/choose-program.png     running-programs picker, filtered by a search
     docs/images/icon.png               the app icon, 128 px (from the SVG)
@@ -73,7 +73,7 @@ try {
     $trayMenu = New-Instance 'CursorCloaker.Ui.TrayMenu' @($assembly.GetType('CursorCloaker.TrayContext').GetMethod('VersionText', $flags).Invoke($null, @()), $settings)
     $menu = $trayMenu.Menu
     $menu.Show((New-Object Drawing.Point ($screen.X + 400), ($screen.Y + 300))); Pump 300
-    $style = $menu.Items | Where-Object { $_.Text -eq 'Move to' }
+    $style = $menu.Items | Where-Object { $_.Text -eq 'Cloak style' }
     [void]$style.Select(); $style.ShowDropDown(); Pump 500
     [Shot]::Save((Expand ([Drawing.Rectangle]::Union($menu.Bounds, $style.DropDown.Bounds)) $margin), (Join-Path $out 'tray-menu.png'))
     $menu.Close(); $menu.Dispose()

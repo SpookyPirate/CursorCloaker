@@ -56,7 +56,7 @@ reported it "works well". They didn't say which models. On 2026-11-25 they repor
 
 ## Since v0.1.0 (unreleased; version already bumped to 0.2.0)
 
-- **Park position setting** (`ParkPosition`, tray **Move to**): any corner or the middle of any edge, default bottom-right.
+- **Park position setting** (`ParkPosition`, in the tray's **Cloak style** submenu under a "Move to" heading): any corner or the middle of any edge, default bottom-right.
   Tested: every position has a unit test (a deliberately swapped position was caught), and the real cursor was parked
   at `TopLeft` → 0,0 and `RightEdge` → 2559,719 on a 2560×1440 screen. Menu screenshots reviewed.
 
