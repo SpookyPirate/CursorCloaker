@@ -6,8 +6,8 @@ This is everything a new developer or agent needs to continue the project cold. 
 
 ## What exists and works (v0.1.0)
 
-Every feature in DESIGN.md is implemented. **It hasn't yet been tested with a real controller.**
-See "Never run" below.
+Every feature in DESIGN.md is implemented. On 2026-11-24 the user tested it with their real controllers and
+reported it "works well". They didn't say which models, or whether they tested while streaming.
 
 - **Decision logic** (`Core/`):
   - `CloakPolicy`: a state machine for cloak and uncloak.
@@ -75,8 +75,8 @@ checked by the probes and screenshots above.
 
 ## Never run / not yet verified
 
-- **Real controller input.** XInput (Xbox/8BitDo), Raw Input (Switch Pro, DualShock/DualSense), and the stick
-  dead-zone and drift thresholds on real hardware. *This is the first thing to test.*
+- **Per-model controller coverage.** The user's real-controller test passed (models not reported). Raw Input pads
+  (Switch Pro, DualShock/DualSense) haven't been individually confirmed, and neither have the dead-zone and drift thresholds on a drifting stick.
 - **End to end in Steam Big Picture, RetroBat, an emulator and a fullscreen game**, including:
   - Moonlight and Steam Link streaming (does the couch mouse uncloak?);
   - parking in a corner while the mouse moves *into* that corner (the hook position may be clamped there, so the
@@ -89,6 +89,6 @@ checked by the probes and screenshots above.
 
 ## Next steps
 
-1. Real-controller and streaming test session with the user (list above). Tune `GamepadActivity` thresholds
-   and `MouseMovementFilter.MOVE_THRESHOLD_PIXELS` from what that shows.
-2. Fix whatever it finds, then release v0.1.0 via RUNNING.md (tag, then `gh release create` with the zip).
+1. Gather feedback from real use, especially streaming and Switch Pro under Steam, and tune the `GamepadActivity` thresholds and
+   `MouseMovementFilter.MOVE_THRESHOLD_PIXELS` from it.
+2. The README images come from `scripts/readme-screenshots.ps1`. Re-shoot them after UI changes.

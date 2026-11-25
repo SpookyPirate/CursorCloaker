@@ -16,6 +16,7 @@ tests/CursorCloaker.Tests xUnit tests for Core
 scripts/build.ps1         test + Release build + zip into dist/
 scripts/preview-menu.ps1  screenshot the real tray menu (and a submenu) into preview/
 scripts/preview-windows.ps1 screenshot the exclusions window and pickers into preview/
+scripts/readme-screenshots.ps1 re-shoot the README images in docs/images/ (clean backdrop, nothing from the desktop)
 scripts/make-icon.ps1     rebuild Resources\CursorCloaker.ico from graphics\CursorCloaker-icon1.svg
 graphics/                 icon artwork (the SVG is the master)
 docs/DESIGN.md            agreed behaviour and planned components

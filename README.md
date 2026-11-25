@@ -1,81 +1,114 @@
-# CursorCloaker
+<p align="center"><img src="docs/images/icon.png" width="96" alt="CursorCloaker icon"></p>
 
-CursorCloaker is a small Windows tray app that hides the mouse cursor while you're playing with a controller, and only then.
-Press a button or move a stick in a fullscreen game, in Steam Big Picture or in an emulator, and the
-cursor disappears. Touch the mouse and it's back. Ordinary desktop use is never affected.
+<h1 align="center">CursorCloaker</h1>
 
-> **Status: v0.1.0, feature-complete and awaiting real-controller testing.** See [Status](#status).
+<p align="center">
+  Hides the mouse cursor while you play with a controller, and only then.<br>
+  <a href="https://github.com/SpookyPirate/CursorCloaker/releases/latest"><b>Download for Windows</b></a>
+</p>
+
+Playing PC games from the couch, in Steam Big Picture, an emulator frontend or over Moonlight or
+Steam Link, often means a mouse cursor parked in the middle of the screen. Other cursor hiders
+hide it whenever the mouse sits still, everywhere in Windows, including while you're reading a web page.
+CursorCloaker reacts to the **controller** instead. Press a button or move a stick over a fullscreen
+game and the cursor disappears. Touch the mouse and it comes straight back. Ordinary desktop use is
+never affected.
+
+<p align="center">
+  <img src="docs/images/tray-menu.png" width="440" alt="CursorCloaker tray menu with the Cloak style submenu open">
+</p>
 
 ## Download
 
-Builds will be published on the [Releases page](https://github.com/SpookyPirate/CursorCloaker/releases/latest)
-as a portable zip. It contains a single `CursorCloaker` folder. Extract it somewhere permanent and run
-`CursorCloaker\CursorCloaker.exe`; there's nothing to install. To upgrade, extract the new zip to the same place: the new
-folder lands on the old one, and your settings are kept. It needs Windows 10 or 11, which already include
-.NET Framework 4.8.
+1. Download `CursorCloaker-v<version>.zip` from the [latest release](https://github.com/SpookyPirate/CursorCloaker/releases/latest).
+2. Extract it somewhere permanent, for example `Documents` or `D:\Tools`. You get a `CursorCloaker` folder.
+3. Run `CursorCloaker\CursorCloaker.exe`. It sits in the system tray and starts with Windows from now on.
 
-> Windows 11 hides new tray icons in the overflow (the **^** next to the clock). To keep CursorCloaker
-> visible, drag its icon onto the taskbar, or turn it on under **Settings > Personalization > Taskbar >
-> Other system tray icons**.
+There's nothing to install. It needs Windows 10 or 11, which already include the .NET Framework 4.8 it
+runs on.
 
-> Builds are unsigned, so Windows SmartScreen may warn the first time you run one. Choose **More info**, then **Run anyway**.
+**Upgrading:** extract the new zip to the same place. The new `CursorCloaker` folder lands on the old
+one, and your settings are kept.
 
-## Features
+> **SmartScreen:** builds are unsigned, so Windows may warn the first time you run one. Choose **More info**, then **Run anyway**.
+>
+> **Can't see the icon?** Windows 11 tucks new tray icons behind the **^** next to the clock. Drag
+> CursorCloaker onto the taskbar, or turn it on under **Settings > Personalization > Taskbar > Other system tray icons**.
 
-- **Controller-triggered.** Reacts to XInput pads (Xbox, 8BitDo) and to other HID gamepads (Switch
-  Pro, DualShock/DualSense) through Raw Input. It doesn't need Steam Input.
-- **Scope setting.** Cloak only over fullscreen or borderless windows (the default), or over any program.
-- **Modes.** Hide the cursor, park it in the corner, or both (the default).
-- **Never stuck invisible.** The normal cursors are restored on start, on exit, after a crash and when the PC locks.
-- **Mouse always wins.** Touch the mouse and the cursor stays visible until you use the controller again.
-- **Excluded programs.** Pick programs it should never touch: browse to an exe, or choose from running programs or open windows.
-- **Tray menu.** Enable or disable, mode, scope, excluded programs, start with Windows, exit.
-- **Dark UI** with blue accents throughout.
-- **Works while streaming** with Moonlight or Steam Link.
+## How it works
 
-The full behaviour is described in [docs/DESIGN.md](docs/DESIGN.md).
+| You… | The cursor… |
+| --- | --- |
+| press a button or move a stick over a fullscreen game | disappears and moves out of the way to the corner |
+| move or click the mouse | comes back, and stays until you use the controller again |
+| switch to a normal window, the desktop or an excluded program | comes back |
+| lock the PC, sign out, or quit CursorCloaker | comes back |
+
+- **Any controller.** It reads Xbox and 8BitDo pads through XInput, and Switch Pro, DualShock, DualSense and DirectInput pads as HID devices. It
+  doesn't need Steam Input, and a stick that drifts a little won't keep hiding the cursor.
+- **Built for streaming.** Over Moonlight/Sunshine or Steam Link, a mouse on the streaming client brings the
+  cursor back too.
+- **Never stuck invisible.** Your normal cursors (including custom ones) are restored on every exit,
+  after a crash, when the PC locks, and each time CursorCloaker starts.
 
 ## Settings
 
-`CursorCloaker.ini` is created next to the exe:
+Click the tray icon:
+
+- **Enabled**: pause or resume. The icon greys out while paused.
+- **Cloak style**: hide the cursor, move it to the corner, or both (the default). Moving it helps with
+  games that draw their own cursor.
+- **Cloak over**: fullscreen programs only (the default), or all programs.
+- **Excluded programs…**: programs CursorCloaker never touches.
+- **Start with Windows**
+
+<p align="center">
+  <img src="docs/images/excluded-programs.png" width="400" alt="Excluded programs window listing Discord, Parsec, Steam and Stream Deck">
+  &nbsp;
+  <img src="docs/images/choose-program.png" width="400" alt="Choosing a running program to exclude, filtered by a search for steam">
+</p>
+
+To exclude a program, browse to its `.exe`, or pick it from your running programs or open windows.
+Changes apply immediately.
+
+Everything is also stored in `CursorCloaker\CursorCloaker.ini`, which you can edit while the app is closed:
 
 ```ini
 [CursorCloaker]
+; true | false
 Enabled=true
-Mode=HideAndPark          ; Hide | Park | HideAndPark
-Scope=FullscreenOnly      ; FullscreenOnly | AllPrograms
+; Hide | Park | HideAndPark
+Mode=HideAndPark
+; FullscreenOnly | AllPrograms
+Scope=FullscreenOnly
+; Milliseconds between controller input and cloaking (0-10000)
 HideDelayMs=0
 StartWithWindows=true
-Exclude=                  ; e.g. obs64;notepad
+; Programs never cloaked over, separated by ;
+Exclude=discord;steam
 ```
+
+## Troubleshooting
+
+- **The cursor is invisible and won't come back.** Start CursorCloaker again; it restores the cursors when it
+  starts. Signing out of Windows and back in also restores them.
+- **A controller doesn't hide the cursor.** Check that CursorCloaker is enabled and the game is fullscreen, or
+  switch **Cloak over** to **All programs**. A Switch Pro Controller that Steam has switched into its
+  extended mode may not be detected while Steam is running.
+- **A program keeps showing or hiding the cursor at the wrong time.** Add it to **Excluded programs**.
 
 ## Build from source
 
-You need the .NET SDK 10 (see `global.json`). From the repo root:
+You need the .NET SDK 10 (pinned in `global.json`). From the repo root:
 
 ```powershell
 dotnet test
 powershell -ExecutionPolicy Bypass -File scripts\build.ps1   # -> dist\CursorCloaker-v<version>.zip
 ```
 
-[RUNNING.md](RUNNING.md) has every command. [TECHSTACK.md](TECHSTACK.md) explains how it's built.
-[HANDOFF.md](HANDOFF.md) describes the current state.
-
-## Status
-
-- [x] Tray app scaffold: single instance, restores the cursors on every exit path
-- [x] Settings file: parsing, defaults, validation, tests
-- [x] Build script and CI
-- [x] Blank-cursor hide, and parking
-- [x] Controller input (XInput + Raw Input)
-- [x] Mouse watcher and foreground/fullscreen detection
-- [x] Cloak policy and its tests
-- [x] Dark theme for the tray menu
-- [x] Tray menu settings, Start with Windows
-- [x] Excluded programs window (browse / running programs / open windows)
-- [ ] Tested with real controllers (Xbox/8BitDo, Switch Pro, DualSense) and streaming
+[RUNNING.md](RUNNING.md) has every command, [TECHSTACK.md](TECHSTACK.md) explains how it's built and
+why, [docs/DESIGN.md](docs/DESIGN.md) is the full behaviour spec, and [HANDOFF.md](HANDOFF.md) describes the current state.
 
 ## License
 
 [MIT](LICENSE)
-- [x] App icon (exe + tray)
