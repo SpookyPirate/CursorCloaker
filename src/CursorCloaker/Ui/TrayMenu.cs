@@ -20,6 +20,10 @@ namespace CursorCloaker.Ui
         private readonly ToolStripLabel moveToHeading = new ToolStripLabel("Move to");
         private readonly ToolStripMenuItem scopeItem = new ToolStripMenuItem("Cloak over");
         private readonly ToolStripMenuItem startupItem = new ToolStripMenuItem("Start with Windows");
+        // Items that change a setting. Clicking one keeps the menu open so several settings can be
+        // changed in one visit (a style, then a position); actions such as Exit still close it.
+        private readonly System.Collections.Generic.HashSet<ToolStripItem> settingItems = new System.Collections.Generic.HashSet<ToolStripItem>();
+        private bool isSettingClick;
         private CloakSettings settings;
 
         /// <summary>Raised with an edited copy of the settings after any menu change.</summary>
@@ -67,6 +71,10 @@ namespace CursorCloaker.Ui
             Menu.Items.Add(new ToolStripSeparator());
             Menu.Items.Add("Exit", null, (sender, args) => ExitRequested?.Invoke());
 
+            settingItems.Add(enabledItem);
+            settingItems.Add(startupItem);
+            foreach (var dropDown in new ToolStripDropDown[] { Menu, modeItem.DropDown, scopeItem.DropDown }) KeepOpenOnSettingClicks(dropDown);
+
             ThemedMenu.Apply(Menu);
             Refresh(settings);
         }
@@ -97,7 +105,21 @@ namespace CursorCloaker.Ui
         {
             var choice = new ToolStripMenuItem(text) { Tag = value };
             choice.Click += (sender, args) => Change(copy => write(copy, value));
+            settingItems.Add(choice);
             parent.DropDownItems.Add(choice);
+        }
+
+        private void KeepOpenOnSettingClicks(ToolStripDropDown dropDown)
+        {
+            // ItemClicked comes just before the close it causes. A click inside a submenu closes the
+            // submenu and the menu above it, both with reason ItemClicked, so every level checks the flag.
+            dropDown.ItemClicked += (sender, args) => isSettingClick = settingItems.Contains(args.ClickedItem);
+            dropDown.Closing += (sender, args) =>
+            {
+                if (args.CloseReason == ToolStripDropDownCloseReason.ItemClicked && isSettingClick) args.Cancel = true;
+            };
+            // Any other close (click away, Esc, an action) clears it for next time.
+            dropDown.Closed += (sender, args) => isSettingClick = false;
         }
 
         private void Change(Action<CloakSettings> edit)

@@ -60,6 +60,12 @@ reported it "works well". They didn't say which models. On 2026-11-25 they repor
   Tested: every position has a unit test (a deliberately swapped position was caught), and the real cursor was parked
   at `TopLeft` → 0,0 and `RightEdge` → 2559,719 on a 2560×1440 screen. Menu screenshots reviewed.
 
+- **Menu stays open on setting clicks** (`TrayMenu.KeepOpenOnSettingClicks`). Verified with real mouse clicks on the
+  real menu in a harness: Move away, then Top-left corner, both applied with the menu still open, and Excluded programs
+  closed it. The previous build closed after the first click, which reproduced the bug. **Not verifiable in the harness:**
+  click-away closing. A menu shown by a background script doesn't close on outside clicks in either build; in the
+  real app, NotifyIcon makes the menu foreground first.
+
 ## Releases
 
 - **v0.1.0** (2026-11-24): https://github.com/SpookyPirate/CursorCloaker/releases/tag/v0.1.0. The `CursorCloaker-v0.1.0.zip` asset is

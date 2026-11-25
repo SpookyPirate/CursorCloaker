@@ -130,7 +130,9 @@ desktop (`Progman` / `WorkerW`) and the taskbar never count. The process is DPI 
 
 ## Tray menu
 
-Left or right click opens it. While paused, the tray icon is dimmed and its tooltip says so.
+Left or right click opens it. While paused, the tray icon is dimmed and its tooltip says so. Clicking a
+setting (a check or a radio choice) keeps the menu open and updates its marks in place, so a style and a
+position can be set in one visit. Actions (Excluded programs…, Exit), clicking elsewhere or Esc close it.
 
 - **Enabled**: on or off.
 - **Cloak style**: Hide, Move away, or Hide and move away (`Mode`). Below them, under a "Move to" heading, come
