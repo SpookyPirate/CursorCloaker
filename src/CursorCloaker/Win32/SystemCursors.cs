@@ -98,12 +98,12 @@ namespace CursorCloaker.Win32
             return point;
         }
 
-        /// <summary>Move the cursor to the bottom-right pixel of the monitor it is on.</summary>
-        public static POINT Park()
+        /// <summary>Move the cursor to the given corner or edge of the monitor it is on.</summary>
+        public static POINT Park(ParkPosition position)
         {
             var current = GetPosition();
             var monitor = Monitors.BoundsOf(MonitorFromPoint(current, Monitors.MONITOR_DEFAULTTONEAREST));
-            ScreenGeometry.ParkPoint(monitor, out int x, out int y);
+            ScreenGeometry.ParkPoint(monitor, position, out int x, out int y);
             SetCursorPos(x, y);
             return new POINT { X = x, Y = y };
         }

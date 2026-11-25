@@ -6,6 +6,7 @@
  * scripts/preview-menu.ps1 can build and screenshot the real menu.
  */
 using System;
+using System.Linq;
 using System.Windows.Forms;
 
 using CursorCloaker.Core;
@@ -16,6 +17,7 @@ namespace CursorCloaker.Ui
     {
         private readonly ToolStripMenuItem enabledItem = new ToolStripMenuItem("Enabled");
         private readonly ToolStripMenuItem modeItem = new ToolStripMenuItem("Cloak style");
+        private readonly ToolStripMenuItem parkItem = new ToolStripMenuItem("Move to");
         private readonly ToolStripMenuItem scopeItem = new ToolStripMenuItem("Cloak over");
         private readonly ToolStripMenuItem startupItem = new ToolStripMenuItem("Start with Windows");
         private CloakSettings settings;
@@ -36,9 +38,21 @@ namespace CursorCloaker.Ui
             Menu.Items.Add(enabledItem);
 
             AddChoice(modeItem, "Hide", CloakMode.Hide, (copy, value) => copy.Mode = value);
-            AddChoice(modeItem, "Move to corner", CloakMode.Park, (copy, value) => copy.Mode = value);
-            AddChoice(modeItem, "Hide and move to corner", CloakMode.HideAndPark, (copy, value) => copy.Mode = value);
+            AddChoice(modeItem, "Move away", CloakMode.Park, (copy, value) => copy.Mode = value);
+            AddChoice(modeItem, "Hide and move away", CloakMode.HideAndPark, (copy, value) => copy.Mode = value);
             Menu.Items.Add(modeItem);
+
+            // Corners first (the usual choice), then the middle of each edge.
+            AddChoice(parkItem, "Bottom-right corner", ParkPosition.BottomRight, (copy, value) => copy.ParkPosition = value);
+            AddChoice(parkItem, "Bottom-left corner", ParkPosition.BottomLeft, (copy, value) => copy.ParkPosition = value);
+            AddChoice(parkItem, "Top-right corner", ParkPosition.TopRight, (copy, value) => copy.ParkPosition = value);
+            AddChoice(parkItem, "Top-left corner", ParkPosition.TopLeft, (copy, value) => copy.ParkPosition = value);
+            parkItem.DropDownItems.Add(new ToolStripSeparator());
+            AddChoice(parkItem, "Bottom edge", ParkPosition.BottomEdge, (copy, value) => copy.ParkPosition = value);
+            AddChoice(parkItem, "Top edge", ParkPosition.TopEdge, (copy, value) => copy.ParkPosition = value);
+            AddChoice(parkItem, "Left edge", ParkPosition.LeftEdge, (copy, value) => copy.ParkPosition = value);
+            AddChoice(parkItem, "Right edge", ParkPosition.RightEdge, (copy, value) => copy.ParkPosition = value);
+            Menu.Items.Add(parkItem);
 
             AddChoice(scopeItem, "Fullscreen programs", CloakScope.FullscreenOnly, (copy, value) => copy.Scope = value);
             AddChoice(scopeItem, "All programs", CloakScope.AllPrograms, (copy, value) => copy.Scope = value);
@@ -65,6 +79,9 @@ namespace CursorCloaker.Ui
             enabledItem.Checked = current.Enabled;
             startupItem.Checked = current.StartWithWindows;
             foreach (ToolStripMenuItem choice in modeItem.DropDownItems) choice.Checked = Equals(choice.Tag, current.Mode);
+            foreach (var choice in parkItem.DropDownItems.OfType<ToolStripMenuItem>()) choice.Checked = Equals(choice.Tag, current.ParkPosition);
+            // Plain Hide never moves the cursor, so where it would move to doesn't apply.
+            parkItem.Enabled = current.Mode != CloakMode.Hide;
             foreach (ToolStripMenuItem choice in scopeItem.DropDownItems) choice.Checked = Equals(choice.Tag, current.Scope);
         }
 

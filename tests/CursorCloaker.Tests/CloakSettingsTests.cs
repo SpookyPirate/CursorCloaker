@@ -18,6 +18,7 @@ namespace CursorCloaker.Tests
             Assert.True(settings.Enabled);
             Assert.Equal(CloakMode.HideAndPark, settings.Mode);
             Assert.Equal(CloakScope.FullscreenOnly, settings.Scope);
+            Assert.Equal(ParkPosition.BottomRight, settings.ParkPosition);
             Assert.Equal(0, settings.HideDelayMilliseconds);
             Assert.True(settings.StartWithWindows);
             Assert.Empty(settings.ExcludedProcesses);
@@ -27,10 +28,11 @@ namespace CursorCloaker.Tests
         public void ParsesEveryKeyCaseInsensitively()
         {
             var settings = CloakSettings.Parse(
-                "[CursorCloaker]\r\nENABLED=off\r\nmode=park\r\nScope=allprograms\r\nHideDelayMs=250\r\nStartWithWindows=no\r\nExclude=obs64\r\n");
+                "[CursorCloaker]\r\nENABLED=off\r\nmode=park\r\nparkposition=topedge\r\nScope=allprograms\r\nHideDelayMs=250\r\nStartWithWindows=no\r\nExclude=obs64\r\n");
 
             Assert.False(settings.Enabled);
             Assert.Equal(CloakMode.Park, settings.Mode);
+            Assert.Equal(ParkPosition.TopEdge, settings.ParkPosition);
             Assert.Equal(CloakScope.AllPrograms, settings.Scope);
             Assert.Equal(250, settings.HideDelayMilliseconds);
             Assert.False(settings.StartWithWindows);
@@ -39,6 +41,8 @@ namespace CursorCloaker.Tests
 
         [Theory]
         [InlineData("Mode=Sideways")]
+        [InlineData("ParkPosition=Middle")]
+        [InlineData("ParkPosition=12")]
         [InlineData("Mode=7")]
         [InlineData("Enabled=maybe")]
         [InlineData("HideDelayMs=soon")]
@@ -50,6 +54,7 @@ namespace CursorCloaker.Tests
 
             Assert.True(settings.Enabled);
             Assert.Equal(CloakMode.HideAndPark, settings.Mode);
+            Assert.Equal(ParkPosition.BottomRight, settings.ParkPosition);
             Assert.Equal(0, settings.HideDelayMilliseconds);
         }
 
@@ -86,6 +91,7 @@ namespace CursorCloaker.Tests
                 Enabled = false,
                 Mode = CloakMode.Hide,
                 Scope = CloakScope.AllPrograms,
+                ParkPosition = ParkPosition.LeftEdge,
                 HideDelayMilliseconds = 1000,
                 StartWithWindows = false,
             };
@@ -97,6 +103,7 @@ namespace CursorCloaker.Tests
             Assert.Equal(original.Enabled, copy.Enabled);
             Assert.Equal(original.Mode, copy.Mode);
             Assert.Equal(original.Scope, copy.Scope);
+            Assert.Equal(original.ParkPosition, copy.ParkPosition);
             Assert.Equal(original.HideDelayMilliseconds, copy.HideDelayMilliseconds);
             Assert.Equal(original.StartWithWindows, copy.StartWithWindows);
             Assert.Equal(original.ExcludedProcesses, copy.ExcludedProcesses);

@@ -20,10 +20,23 @@ namespace CursorCloaker.Core
     {
         /// <summary>Swap the system cursors for a blank one.</summary>
         Hide,
-        /// <summary>Move the cursor to the bottom-right corner of its monitor.</summary>
+        /// <summary>Move the cursor to the ParkPosition on its monitor.</summary>
         Park,
         /// <summary>Both: hidden, and parked in case a program draws its own cursor.</summary>
         HideAndPark,
+    }
+
+    /// <summary>Where a parked cursor goes on its monitor: a corner, or the middle of an edge.</summary>
+    internal enum ParkPosition
+    {
+        BottomRight,
+        BottomLeft,
+        TopRight,
+        TopLeft,
+        BottomEdge,
+        TopEdge,
+        LeftEdge,
+        RightEdge,
     }
 
     /// <summary>Which foreground windows controller input may cloak the cursor over.</summary>
@@ -40,6 +53,7 @@ namespace CursorCloaker.Core
         public bool Enabled { get; set; } = true;
         public CloakMode Mode { get; set; } = CloakMode.HideAndPark;
         public CloakScope Scope { get; set; } = CloakScope.FullscreenOnly;
+        public ParkPosition ParkPosition { get; set; } = ParkPosition.BottomRight;
 
         /// <summary>Delay between controller input and cloaking. 0 = immediately.</summary>
         public int HideDelayMilliseconds { get; set; } = 0;
@@ -93,6 +107,9 @@ namespace CursorCloaker.Core
                 case "scope":
                     if (Enum.TryParse(value, true, out CloakScope scope) && Enum.IsDefined(typeof(CloakScope), scope)) settings.Scope = scope;
                     break;
+                case "parkposition":
+                    if (Enum.TryParse(value, true, out ParkPosition position) && Enum.IsDefined(typeof(ParkPosition), position)) settings.ParkPosition = position;
+                    break;
                 case "hidedelayms":
                     if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int delay))
                         settings.HideDelayMilliseconds = Math.Max(0, Math.Min(MAX_HIDE_DELAY_MILLISECONDS, delay));
@@ -145,6 +162,8 @@ namespace CursorCloaker.Core
             text.AppendLine("Enabled=" + (Enabled ? "true" : "false"));
             text.AppendLine("; Hide | Park | HideAndPark");
             text.AppendLine("Mode=" + Mode);
+            text.AppendLine("; Where Park moves the cursor: BottomRight | BottomLeft | TopRight | TopLeft | BottomEdge | TopEdge | LeftEdge | RightEdge");
+            text.AppendLine("ParkPosition=" + ParkPosition);
             text.AppendLine("; FullscreenOnly | AllPrograms");
             text.AppendLine("Scope=" + Scope);
             text.AppendLine("; Milliseconds between controller input and cloaking (0-" + MAX_HIDE_DELAY_MILLISECONDS + ")");

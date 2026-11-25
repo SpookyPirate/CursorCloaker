@@ -41,10 +41,14 @@ pad hides the cursor, mouse shows it, pad hides it.
 | Mode | What it does | Why you'd want it |
 | --- | --- | --- |
 | `Hide` | Swaps every system cursor for a blank one | Works in every program that uses the system cursor |
-| `Park` | Moves the cursor to the bottom-right corner of its monitor | For programs that draw their own cursor |
+| `Park` | Moves the cursor to the `ParkPosition` on its monitor (default: bottom-right corner) | For programs that draw their own cursor |
 | `HideAndPark` (default) | Both | Hidden, and out of the way if a program ignores the swap |
 
-When it uncloaks, `Park` does not move the cursor back. The corner is a harmless place for it to
+`ParkPosition` is any corner (the monitor's outermost pixel) or the middle pixel of any edge:
+`BottomRight` (default), `BottomLeft`, `TopRight`, `TopLeft`, `BottomEdge`, `TopEdge`, `LeftEdge`, `RightEdge`. It's measured on
+the monitor the cursor is on.
+
+When it uncloaks, `Park` does not move the cursor back. The parked spot is a harmless place for it to
 reappear.
 
 ## Safety invariant: the cursor must never stay invisible
@@ -129,7 +133,8 @@ desktop (`Progman` / `WorkerW`) and the taskbar never count. The process is DPI 
 Left or right click opens it. While paused, the tray icon is dimmed and its tooltip says so.
 
 - **Enabled**: on or off.
-- **Cloak style**: Hide, Move to corner, or Hide and move to corner (`Mode`).
+- **Cloak style**: Hide, Move away, or Hide and move away (`Mode`).
+- **Move to**: four corners, then the four edge midpoints (`ParkPosition`). Disabled while the style is Hide.
 - **Cloak over**: Fullscreen programs or All programs (`Scope`).
 - **Excluded programs…**: opens the exclusions window.
 - **Start with Windows**: on or off.

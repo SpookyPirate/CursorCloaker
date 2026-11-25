@@ -34,7 +34,7 @@ reported it "works well". They didn't say which models. On 2026-11-25 they repor
   contents greyed (`PAUSED_BRIGHTNESS` 0.6), with the tile kept solid. Fading the whole icon made it vanish on a dark taskbar.
 - **Build**: `scripts/build.ps1` produces `CursorCloaker-v<version>.zip` → `CursorCloaker/` → files, and asserts that layout.
   The layout check was seen to flag a flat zip. CI is green. License: MIT.
-- **Tests**: 56 passing (`dotnet test`). The mouse-uncloak rule was deliberately broken to confirm the suite
+- **Tests**: 67 passing (`dotnet test`). The mouse-uncloak rule was deliberately broken to confirm the suite
   catches it.
 
 **Verified facts (2026-11-24, Windows 11, developer machine):**
@@ -53,6 +53,12 @@ reported it "works well". They didn't say which models. On 2026-11-25 they repor
   - The menu, and the menu with a submenu open.
   - The exclusions window, empty and filled, with the Add menu open.
   - Both pickers, with real data: 92 running programs and 13 windows.
+
+## Since v0.1.0 (unreleased)
+
+- **Park position setting** (`ParkPosition`, tray **Move to**): any corner or the middle of any edge, default bottom-right.
+  Tested: every position has a unit test (a deliberately swapped position was caught), and the real cursor was parked
+  at `TopLeft` → 0,0 and `RightEdge` → 2559,719 on a 2560×1440 screen. Menu screenshots reviewed.
 
 ## Releases
 

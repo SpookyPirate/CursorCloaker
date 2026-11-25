@@ -59,8 +59,8 @@ namespace CursorCloaker
 
         public void UpdateSettings(CloakSettings newSettings)
         {
-            // A mode change while cloaked would leave the old effect half-applied; start clean.
-            if (policy.IsCloaked && newSettings.Mode != settings.Mode) Apply(policy.Reset());
+            // A style or position change while cloaked would leave the old effect half-applied; start clean.
+            if (policy.IsCloaked && (newSettings.Mode != settings.Mode || newSettings.ParkPosition != settings.ParkPosition)) Apply(policy.Reset());
             settings = newSettings;
             Apply(policy.OnSettingsChanged(newSettings));
         }
@@ -126,7 +126,7 @@ namespace CursorCloaker
             if (settings.Mode != CloakMode.Park) SystemCursors.Hide();
             if (settings.Mode != CloakMode.Hide)
             {
-                var parked = SystemCursors.Park();
+                var parked = SystemCursors.Park(settings.ParkPosition);
                 mouseFilter.Reset(parked.X, parked.Y);
             }
             else

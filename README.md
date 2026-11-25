@@ -15,7 +15,7 @@ game and the cursor disappears. Touch the mouse and it comes straight back. Ordi
 never affected.
 
 <p align="center">
-  <img src="docs/images/tray-menu.png" width="440" alt="CursorCloaker tray menu with the Cloak style submenu open">
+  <img src="docs/images/tray-menu.png" width="440" alt="CursorCloaker tray menu with the Move to submenu open, listing four corners and four edges">
 </p>
 
 ## Download
@@ -39,7 +39,7 @@ one, and your settings are kept.
 
 | You… | The cursor… |
 | --- | --- |
-| press a button or move a stick over a fullscreen game | disappears and moves out of the way to the corner |
+| press a button or move a stick over a fullscreen game | disappears and moves out of the way, to a corner or edge you choose |
 | move or click the mouse | comes back, and stays until you use the controller again |
 | switch to a normal window, the desktop or an excluded program | comes back |
 | lock the PC, sign out, or quit CursorCloaker | comes back |
@@ -56,8 +56,9 @@ one, and your settings are kept.
 Click the tray icon:
 
 - **Enabled**: pause or resume. The icon greys out while paused.
-- **Cloak style**: hide the cursor, move it to the corner, or both (the default). Moving it helps with
-  games that draw their own cursor.
+- **Cloak style**: hide the cursor, move it away, or both (the default). Moving it helps with games that
+  draw their own cursor.
+- **Move to**: where a moved cursor goes. Any corner (bottom-right by default) or the middle of any edge.
 - **Cloak over**: fullscreen programs only (the default), or all programs.
 - **Excluded programs…**: programs CursorCloaker never touches.
 - **Start with Windows**
@@ -79,6 +80,8 @@ Everything is also stored in `CursorCloaker\CursorCloaker.ini`, which you can ed
 Enabled=true
 ; Hide | Park | HideAndPark
 Mode=HideAndPark
+; Where Park moves the cursor: BottomRight | BottomLeft | TopRight | TopLeft | BottomEdge | TopEdge | LeftEdge | RightEdge
+ParkPosition=BottomRight
 ; FullscreenOnly | AllPrograms
 Scope=FullscreenOnly
 ; Milliseconds between controller input and cloaking (0-10000)

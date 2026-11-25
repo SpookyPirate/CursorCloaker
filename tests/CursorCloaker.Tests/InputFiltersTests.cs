@@ -159,9 +159,35 @@ namespace CursorCloaker.Tests
             var second = new ScreenRect(-1920, 0, 0, 1080);
 
             Assert.True(ScreenGeometry.CoversMonitor(new ScreenRect(-1920, 0, 0, 1080), second));
-            ScreenGeometry.ParkPoint(second, out int x, out int y);
+            ScreenGeometry.ParkPoint(second, ParkPosition.BottomRight, out int x, out int y);
             Assert.Equal(-1, x);
             Assert.Equal(1079, y);
+        }
+        [Theory]
+        [InlineData("BottomRight", 3839, 2159)]
+        [InlineData("BottomLeft", 0, 2159)]
+        [InlineData("TopRight", 3839, 0)]
+        [InlineData("TopLeft", 0, 0)]
+        [InlineData("BottomEdge", 1919, 2159)]
+        [InlineData("TopEdge", 1919, 0)]
+        [InlineData("LeftEdge", 0, 1079)]
+        [InlineData("RightEdge", 3839, 1079)]
+        public void ParkPointLandsOnTheMonitorsOutermostPixels(string position, int expectedX, int expectedY)
+        {
+            // By name: the enum is internal, and a public test method can't take it as a parameter.
+            ScreenGeometry.ParkPoint(Monitor, (ParkPosition)System.Enum.Parse(typeof(ParkPosition), position), out int x, out int y);
+
+            Assert.Equal(expectedX, x);
+            Assert.Equal(expectedY, y);
+        }
+
+        [Fact]
+        public void EdgePositionsUseThatMonitorsOwnCentre()
+        {
+            ScreenGeometry.ParkPoint(new ScreenRect(-1920, 200, 0, 1280), ParkPosition.LeftEdge, out int x, out int y);
+
+            Assert.Equal(-1920, x);
+            Assert.Equal(739, y);
         }
     }
 }

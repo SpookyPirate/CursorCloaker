@@ -3,7 +3,8 @@
 
   Loads the built CursorCloaker.exe, builds the actual TrayMenu with default settings, and saves:
     preview\menu.png          the menu with one row in its hover state (-Select)
-    preview\menu-submenu.png  the same with the "Cloak style" submenu open
+    preview\menu-submenu.png  the same with the "Move to" submenu open
+    preview\menu-hide-mode.png  with Cloak style set to Hide, where "Move to" is greyed out
   Every state the menu uses appears: checked and unchecked items, radio choices, submenus,
   separators, the version label.
 
@@ -54,9 +55,16 @@ Pump 500
 Save-Area $menu.Bounds 'menu.png'
 $itemHeights = ($menu.Items | ForEach-Object { $_.Height }) -join ','
 
-$style = $menu.Items | Where-Object { $_.Text -eq 'Cloak style' }
+$style = $menu.Items | Where-Object { $_.Text -eq 'Move to' }
 [void]$style.Select(); $style.ShowDropDown(); Pump 500
 Save-Area ([Drawing.Rectangle]::Union($menu.Bounds, $style.DropDown.Bounds)) 'menu-submenu.png'
 
 $menu.Close(); $menu.Dispose()
+
+# Hide mode: the position submenu doesn't apply and is shown disabled.
+$settings.Mode = [Enum]::Parse($assembly.GetType('CursorCloaker.Core.CloakMode'), 'Hide')
+$hideMenu = [Activator]::CreateInstance($assembly.GetType('CursorCloaker.Ui.TrayMenu'), $flags, $null, @('v0.0.0-preview', $settings), $null).Menu
+$hideMenu.Show((New-Object Drawing.Point 200, 200)); Pump 500
+Save-Area $hideMenu.Bounds 'menu-hide-mode.png'
+$hideMenu.Close(); $hideMenu.Dispose()
 "Saved to $out  (menu $($menu.Bounds.Width)x$($menu.Bounds.Height), item heights: $itemHeights)"

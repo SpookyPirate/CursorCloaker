@@ -127,11 +127,25 @@ namespace CursorCloaker.Core
                 && window.Bottom >= monitor.Bottom - FULLSCREEN_TOLERANCE_PIXELS;
         }
 
-        /// <summary>Where a parked cursor goes: the monitor's bottom-right pixel.</summary>
-        public static void ParkPoint(ScreenRect monitor, out int x, out int y)
+        /// <summary>
+        /// Where a parked cursor goes: the monitor's outermost pixel in that corner, or the middle
+        /// pixel of that edge. Right and Bottom are exclusive, hence the -1.
+        /// </summary>
+        public static void ParkPoint(ScreenRect monitor, ParkPosition position, out int x, out int y)
         {
-            x = monitor.Right - 1;
-            y = monitor.Bottom - 1;
+            int left = monitor.Left, top = monitor.Top, right = monitor.Right - 1, bottom = monitor.Bottom - 1;
+            int centerX = left + (right - left) / 2, centerY = top + (bottom - top) / 2;
+            switch (position)
+            {
+                case ParkPosition.BottomLeft: x = left; y = bottom; break;
+                case ParkPosition.TopRight: x = right; y = top; break;
+                case ParkPosition.TopLeft: x = left; y = top; break;
+                case ParkPosition.BottomEdge: x = centerX; y = bottom; break;
+                case ParkPosition.TopEdge: x = centerX; y = top; break;
+                case ParkPosition.LeftEdge: x = left; y = centerY; break;
+                case ParkPosition.RightEdge: x = right; y = centerY; break;
+                default: x = right; y = bottom; break;   // BottomRight
+            }
         }
     }
 }
